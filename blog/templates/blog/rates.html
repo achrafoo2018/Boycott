@@ -1,0 +1,49 @@
+<!-- rate -->
+  {% if user.is_authenticated %}
+  <form id="upVoteForm" class="mb-1" action="{% url 'up_vote' %}" method="post">
+    {% csrf_token %}
+    {% if user in post.up_votes.all %}
+      <i class="up" id="upVoted" onclick="upVote({{ post.id }});"></i>
+    {% else %}
+      <i class="up" id="upUnVoted" onclick="upVote({{ post.id }});"></i>
+    {% endif %}
+    <input type="hidden" class="doUpVote" id="up{{ post.id }}" value="{{ post.id }}" name="post_id"></input>
+  </form>
+  {% else %}
+  <div class="vote">
+    <i class="up mb-1" id="upUnVoted" onclick="window.location.href={% url 'login' %}"></i>
+  </div>
+  {% endif %}
+  {% if user in post.down_votes.all %}
+      <span style="color: #ff4444;" {% if LANGUAGE_CODE == "ar" %} dir="ltr" {% endif %}><b>{{ post.rates }}</b></span>
+  {% else %}
+    {% if user in post.up_votes.all %}
+      <span style="color: blue;" {% if LANGUAGE_CODE == "ar" %} dir="ltr" {% endif %}><b>{{ post.rates }}</b></span>
+    {% else %}
+      <span {% if LANGUAGE_CODE == "ar" %} dir="ltr" {% endif %}><b>{{ post.rates }}</b></span>
+    {% endif %}
+  {% endif %}
+  {% if user.is_authenticated %}
+    <form id="downVoteForm" class="mt-2" action="{% url 'down_vote' %}" method="post">
+      {% csrf_token %}
+      {% if user in post.down_votes.all %}
+        <i class="down" id="downVoted" onclick="downVote({{ post.id }});"></i>
+      {% else %}
+        <i class="down" id="downUnVoted" onclick="downVote({{ post.id }});"></i>
+      {% endif %}
+      <input type="hidden" class="doDownVote" value="{{ post.id }}" id="down{{ post.id }}" name="post_id"></input>
+    </form>
+  {% else %}
+  <div class="vote">
+      <i class="down mt-2" id="downUnVoted" onclick="window.location.href={% url 'login' %}"></i>
+  </div>
+  {% endif %}
+  <script type="text/javascript">
+    function upVote(id){
+      document.getElementById("up"+id).click();
+    };
+    function downVote(id){
+      document.getElementById("down"+id).click();
+    };
+  </script>
+<!-- end Rate -->

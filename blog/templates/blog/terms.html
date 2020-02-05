@@ -1,0 +1,12 @@
+{% extends 'blog/base.html' %}
+{% block content %}
+{% if LANGUAGE_CODE == 'en' %}
+  {% include 'blog/termsEn.html' %}
+{% else %}
+  {% if LANGUAGE_CODE == 'fr' %}
+    {% include 'blog/termsFr.html' %}
+  {% else %}
+    {% include 'blog/termsFr.html' %}
+  {% endif %}
+{% endif %}
+{% endblock content %}

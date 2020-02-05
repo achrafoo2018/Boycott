@@ -1,0 +1,54 @@
+{% extends "blog/base.html" %}
+{% load static %}
+{% load i18n %}
+{% block content %}
+    {% for post in posts %}
+    <article class="media post-content-section" {% if LANGUAGE_CODE == "ar" %} style="direction: rtl;text-align: right;" {% endif %}>
+      <div class="mr-4 ml-2 rates" id="rates-section{{ post.id }}" style="text-align: center;margin-top:20px;">
+        {% include 'blog/rates.html' %}
+      </div>
+      <a href="{% url 'user-posts' post.author.username %}">
+        <img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}" alt="profilePic">
+      </a>
+      <div class="media-body">
+      <div class="article-metadata">
+        <a class="mr-2" href="{% url 'user-posts' post.author.username %}">
+          {{ post.author.get_full_name }}
+        </a>
+        <small class="text-muted">{{ post.date_posted }}</small>
+        {% if user.username == post.author.username or user.is_superuser %}
+        <div class="dropdown" {% if LANGUAGE_CODE == "ar" %} style="float: left" {% else %} style="float: right" {% endif %}>
+          <p class="dropdown-toggle" data-toggle="dropdown">{% trans 'More' %}</p>
+          <ul class="dropdown-menu">
+              <a href="{% url 'post-delete' post.id %}"><li class="ml-2">{% trans 'Delete Post' %}</li></a>
+          </ul>
+        </div>
+        {% endif %}
+      </div>
+      <h3 class="article-title {% if LANGUAGE_CODE == 'ar' %}mr-2{% endif %}" >{{ post.title }}</h3>
+      <p class="article-content">{{ post.content }}</p>
+      </div>
+    </article>
+    {% endfor %}
+    <div class="ml-2" {% if LANGUAGE_CODE == 'ar' %}style="text-align:right"{% endif %}>
+    {% if is_paginated %}
+      {% if page_obj.has_previous %}
+      <a class="btn btn-primary mb-4" href="?page=1">&laquo;</a>
+      <a class="btn btn-primary mb-4" href="?page={{ page_obj.previous_page_number }}">{% trans 'Previous' %}</a>
+
+      {% endif %}
+      {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+          <a class="btn btn-primary mb-4 active" href="?page={{ num }}">{{ num }}</a>
+        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+          <a class="btn btn-primary mb-4 " href="?page={{ num }}">{{ num }}</a>
+        {% endif %}
+      {% endfor %}
+      {% if page_obj.has_next %}
+        <a class="btn btn-primary mb-4" href="?page={{ page_obj.next_page_number }}">{% trans 'Next' %}</a>
+        <a class="btn btn-primary mb-4" href="?page={{ page_obj.paginator.num_pages }}">&raquo;</a>
+      {% endif %}
+    {% endif %}
+    </div>
+
+  {% endblock content %}

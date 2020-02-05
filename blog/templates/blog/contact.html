@@ -1,0 +1,25 @@
+{% extends 'blog/base.html' %}
+{% load i18n %}
+{% load static %}
+{% block content %}
+  <div class="content-section" {% if LANGUAGE_CODE == "ar" %} style="text-align: right;" {% endif %}>
+    <form class="" action="{% url 'contact' %}" method="post" {% if LANGUAGE_CODE == 'ar' %} style="text-align: right;" {% endif %}>
+      {% csrf_token %}
+      {% if not user.is_authenticated %}
+      <div class="form-group">
+        <label for="formGroupExampleInput">{% trans 'Email' %}*</label>
+        <input type="text" name="email" class="form-control" id="formGroupExampleInput" placeholder="{% trans 'Email' %}" required>
+      </div>
+      {% endif %}
+      <div class="form-group">
+        <label for="formGroupExampleInput">{% trans 'Subject' %}*</label>
+        <input type="text" name="subject" class="form-control" id="formGroupExampleInput" placeholder="{% trans 'Subject' %}" required>
+      </div>
+      <div class="form-group">
+         <label for="exampleFormControlTextarea1">{% trans 'Message' %}*</label>
+         <textarea name="message" class="form-control" id="exampleFormControlTextarea1" rows="8" placeholder="{% trans 'Message' %}" required></textarea>
+     </div>
+     <button type="submit" name="button" class="btn btn-primary btn-block">{% trans 'Send' %}</button>
+    </form>
+  </div>
+{% endblock content %}

@@ -1,0 +1,61 @@
+{% extends "blog/base.html" %}
+{% load i18n %}
+{% block content %}
+    {% if view.kwargs.username == user.username %}
+      <h2 class="mb-3" {% if LANGUAGE_CODE == "ar" %} style="text-align: right;" {% endif %}> {% trans 'Your Posts' %} ({{ page_obj.paginator.count }})</h2>
+    {% else %}
+      {% if LANGUAGE_CODE == "ar" %}
+        <h2 class="mb-3"  style="text-align: right;" > {% trans 'Posts By' %} ({{ page_obj.paginator.count }}) {{ view.kwargs.username }}</h2>
+      {% else %}
+        <h2 class="mb-3"> {% trans 'Posts By' %} {{ view.kwargs.username }} ({{ page_obj.paginator.count }})</h2>
+      {% endif %}
+    {% endif %}
+    {% for post in posts %}
+    <article class="media post-content-section" {% if LANGUAGE_CODE == "ar" %} style="direction: rtl;text-align: right;" {% endif %}>
+      <!-- rate -->
+      <div class="mr-4 ml-2" id="rates-section{{ post.id }}" style="text-align: center;margin-top:20px;">
+        {% include 'blog/rates.html' %}
+      </div>
+      <!-- end Rate -->
+      <img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}" alt="profilePic">
+      <div class="media-body">
+      <div class="article-metadata">
+        <a class="mr-2" href="{% url 'user-posts' post.author.username %}">
+          {{ post.author.get_full_name }}
+        </a>
+        <small class="text-muted">{{ post.date_posted }}</small>
+        <div class="dropdown" {% if LANGUAGE_CODE == "ar" %} style="float: left" {% else %} style="float: right" {% endif %}>
+          <p class="dropdown-toggle" data-toggle="dropdown"> {% trans 'More' %}</p>
+          <ul class="dropdown-menu">
+            {% if user.username == post.author.username %}
+              <a href="{% url 'post-delete' post.id %}"><li class="ml-2"> {% trans 'Delete Post' %}</li></a>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+      <h3><a class="article-title {% if LANGUAGE_CODE == 'ar' %}mr-2{% endif %}">{{ post.title }}</a></h3>
+      <p class="article-content">{{ post.content }}</p>
+      </div>
+    </article>
+    {% endfor %}
+    <div class="mr-2" {% if LANGUAGE_CODE == 'ar' %}style="text-align:right"{% endif %}>
+    {% if is_paginated %}
+      {% if page_obj.has_previous %}
+      <a class="btn btn-primary mb-4" href="?page=1">&laquo;</a>
+      <a class="btn btn-primary mb-4" href="?page={{ page_obj.previous_page_number }}">{% trans 'Previous' %}</a>
+
+      {% endif %}
+      {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+          <a class="btn btn-primary mb-4 active" href="?page={{ num }}">{{ num }}</a>
+        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+          <a class="btn btn-primary mb-4" href="?page={{ num }}">{{ num }}</a>
+        {% endif %}
+      {% endfor %}
+      {% if page_obj.has_next %}
+        <a class="btn btn-primary mb-4" href="?page={{ page_obj.next_page_number }}">{% trans 'Next' %}</a>
+        <a class="btn btn-primary mb-4" href="?page={{ page_obj.paginator.num_pages }}">&raquo;</a>
+      {% endif %}
+    {% endif %}
+  </div>
+{% endblock content %}

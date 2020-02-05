@@ -1,0 +1,164 @@
+{% load static %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}" {% if LANGUAGE_CODE == "ar" %} dir="rtl" style="text-align: right;" {% endif %}>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="shortcut icon" href="../../../media/icons/powerIcon.png" type="image/x-icon"/>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="{% static 'blog/css/main.css' %}">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family={% if LANGUAGE_CODE == 'ar' %}Amiri{% else %}Roboto+Condensed{% endif %}" rel="stylesheet">
+    {% if title %}
+        <title>BOYCOTT - {{ title }}</title>
+    {% else %}
+        <title>BOYCOTT</title>
+    {% endif %}
+</head>
+<body style="background: #fafafa;margin-top: 5rem;font-family:
+  {% if LANGUAGE_CODE == 'ar' %}Amiri{% else %}'Roboto Condensed'{% endif %};">
+  <header class="site-header">
+    <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
+    <!-- Translation -->
+    <form action="{% url 'set_language' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="text" value="{{ redirect_to }}">
+        <select name="language" onchange="this.form.submit();" class="custom-select custom-select-sm">
+          {% get_available_languages as LANGUAGES %}
+          {% get_language_info_list for LANGUAGES as languages %}
+          {% for language in languages %}
+          <option value="{{ language.code }}" {% if language.code == LANGUAGE_CODE %} selected {% endif %}>
+            {{ language.name_local }} ({{ language.code }})
+          </option>
+          {% endfor %}
+        </select>
+    </form>
+    <!-- end Translation -->
+    <div class="container">
+      <a class="navbar-brand m{% if LANGUAGE_CODE == 'ar' %}l{% else %}r{% endif %}-3" href="/">BOYCOTT</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarToggle">
+        <div class="navbar-nav {% if LANGUAGE_CODE != "ar" %}mr-auto{% endif %}" >
+            <a class="nav-item nav-link" href="{% url 'blog-home' %}">{% trans 'Home' %}</a>
+            <a class="nav-item nav-link" href="{% url 'blog-about' %}">{% trans 'About' %}</a>
+            <a class="nav-item nav-link" href="{% url 'contact' %}">{% trans 'Contact' %}</a>
+        </div>
+        <div class="navbar-nav {% if LANGUAGE_CODE == "ar" %}mr-auto{% endif %}">
+          {% if user.is_authenticated %}
+            <a class="nav-item nav-link" href="{% url 'post-create' %}"> <img src="../../../media/icons/new_post.png" alt="newPost" height="22px" width="25px"> {% trans 'New Post' %}</a>
+            <a class="nav-item nav-link" href="{% url 'profile' %}"><img class="rounded-circle" width="30px" height="30px" src="{{ user.profile.image.url }}"> {{ user.first_name }}</a>
+            <a class="nav-item nav-link" href="{% url 'logout' %}"><img src="../../../media/icons/logout.svg" alt="logoutIcon" height="22px" width="25px"> {% trans 'Log out' %}</a>
+          {% else %}
+            <a class="nav-item nav-link" href="{% url 'login' %}">{% trans 'Login' %}</a>
+            <a class="nav-item nav-link" href="{% url 'register' %}">{% trans 'Sign up' %}</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </nav>
+  </header>
+  <!-- Ads Here -->
+  <img name="adsSlider" height="250px" width="1110px" class="mb-3 mx-auto d-block" id="adsSlider">
+  <script src="{% static 'blog/js/adsSlider.js' %}"></script>
+  <!-- Ads Here -->
+  <main role="main" class="container" >
+    <div class="row">
+      <div class="col-md-8">
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        {% endif %}
+        {% block content %}{% endblock %}
+      </div>
+      <div class="col-md-4">
+        <div class="content-section" {% if LANGUAGE_CODE == 'ar' %} style="text-align: right" {% endif %}>
+          <!-- count Down Timer -->
+          <div class="text-center"><i>Next Post Will Be choosed in</i></div>
+          <div id="countholder" class="m{% if LANGUAGE_CODE == 'ar' %}r{% else %}l{% endif %}-4">
+            <div><span class="days" id="days"></span><div class="smalltext">Days</div></div>
+            <div><span class="hours" id="hours"></span><div class="smalltext">Hours</div></div>
+            <div><span class="minutes" id="minutes"></span><div class="smalltext">Minutes</div></div>
+            <div><span class="seconds" id="seconds"></span><div class="smalltext">Seconds</div></div>
+          </div>
+          <!-- End count timer -->
+          <p class='text-muted'>
+            <ul class="list-group">
+              <li class="list-group-item list-group-item-light">Latest Posts</li>
+              <li class="list-group-item list-group-item-light">Announcements</li>
+              <li class="list-group-item list-group-item-light">Calendars</li>
+            </ul>
+          </p>
+          {% if LANGUAGE_CODE == "en" %}
+            <small class="ml-2">{% now "Y" %} &copy; Copyright <b>The Power</b> All Rights Reserved.</small>
+          {% else %}
+            {% if LANGUAGE_CODE == "fr" %}
+              <small class="ml-2">{% now "Y" %} &copy; Copyright <b>Le Pouvoir</b> Tous Droit Résérvés.</small>
+            {% else %}
+              <small class="mr-5" style="font-size: 110%;">جميع الحقوق محفوظة &copy; {% now "Y" %}</small>
+            {% endif %}
+          {% endif %}
+        </div>
+    </div>
+  </main>
+  <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script type="text/javascript" src="{% static 'blog/js/countDownTimer.js' %}"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <script type="text/javascript">
+      document.addEventListener('DOMContentLoaded', function() {
+    getSeconds();
+      }, false);
+      // refresh form when up arrow is clicked
+      $(document).ready(function(event){
+      $(document).on('click', '.doUpVote', function(event){
+        event.preventDefault();
+        var pk = $(this).attr('value');
+        $.ajax({
+          type: 'POST',
+          url: '{% url "up_vote" %}',
+          data: {'post_id':pk, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
+          dataType : 'json',
+          success: function(response){
+            $('#rates-section'+pk).html(response['form']);
+          },
+          error: function(rs, e){
+            console.log(rs.responeText);
+          }
+        });
+      });
+    });
+    // refresh form when down arrow is clicked
+    $(document).ready(function(event){
+    $(document).on('click', '.doDownVote', function(event){
+      event.preventDefault();
+      var pk = $(this).attr('value');
+      $.ajax({
+        type: 'POST',
+        url: '{% url "down_vote" %}',
+        data: {'post_id':pk, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
+        dataType : 'json',
+        success: function(response){
+          $('#rates-section'+pk).html(response['form']);
+        },
+        error: function(rs, e){
+          console.log(rs.responeText);
+        }
+      });
+    });
+  });
+    </script>
+</body>
+</html>

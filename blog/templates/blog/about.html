@@ -1,0 +1,22 @@
+{% extends "blog/base.html" %}
+{% load static %}
+{% block content %}
+  <div class="content-section" style="font-size:110%;">
+    <div class="text-center">
+      <h2>- Our Mission -</h2>
+      <span style="color: #2e3131;font-size:110%;">Stop common problems of tunisian population</span>
+      <h2 class="mt-3">About Our Website :</h2>
+    </div>
+    <div style="font-size:108%">Our website is directed to tunisian population. The Concept of our website is very easy
+      it's <b>The power of union.</b><br>
+      Our goal is to stop problems like sudden increase of some product's prices.
+      So a user post a suggestion with that matter and everyone with
+      this suggestion vote for it, otherwise he vote against it. Posts will be ordered by rates, so
+      the most liked suggestion will be on top of the first page and the least one will be on the bottom of last page. <br>
+      Every Week we choose the most rated post and we send it to all user's email, and we<br>
+      all apply that suggestion in real life.
+    </div><br>
+      <div class="text-center" style="font-size:112%"><b>So <a href="{% url 'register' %}" style="text-decoration: none;">
+            Join us</a> And make The Change</b></div>
+    </div>
+{% endblock content %}

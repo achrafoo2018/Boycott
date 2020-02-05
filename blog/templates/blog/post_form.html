@@ -1,0 +1,34 @@
+{% extends "blog/base.html" %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+{% load static %}
+{% block content %}
+    <div class="content-section" {% if LANGUAGE_CODE == "ar" %} style="text-align: right;" {% endif %}>
+      <form method="post">
+          {% csrf_token %}
+          <fieldset class="form-group">
+              <legend class="border-bottom mb-4">{% trans 'New Post' %}</legend>
+              {{ form|crispy }}
+              <span id="errorMessage"></span>
+              <span id="charcount" class="ml-1"></span>
+          </fieldset>
+          <div class="form-group">
+            <button type="submit" class="btn btn-primary btn-block">{% trans 'Post' %}</button>
+          </div>
+      </form>
+      </div>
+      {% if LANGUAGE_CODE != "en" %}
+      <script type="text/javascript">
+          var labels = document.querySelectorAll("label");
+          {% if LANGUAGE_CODE == "ar" %}
+            labels[0].textContent = "العنوان*";
+            labels[1].textContent = "المحتوى*";
+          {% else %}
+            labels[0].textContent = "Titre*";
+            labels[1].textContent = "Contenu*"
+          {% endif %}
+
+      </script>
+      {% endif %}
+      <script type="text/javascript" src="{% static 'blog/js/contentCharCounter.js' %}"></script>
+{% endblock content %}

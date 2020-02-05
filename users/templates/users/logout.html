@@ -1,0 +1,7 @@
+{% extends "blog/base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% block content %}
+      <meta http-equiv="refresh" content="1.4;url={% url 'blog-home' %}" />
+      <h3 style="color: #4286f4;{% if LANGUAGE_CODE == 'ar' %}text-align: right {% endif %}"> {% trans 'You have been successfully logged out!' %} </h3>
+{% endblock content %}

@@ -1,0 +1,39 @@
+{% extends "blog/base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block content %}
+    <div class="content-section" {% if LANGUAGE_CODE == "ar" %} style="text-align: right" {% endif %}>
+      <form method="post" autocomplete="off">
+          {% csrf_token %}
+          <fieldset class="form-group">
+              <legend class="border-bottom mb-4">{% trans 'Join Today' %}</legend>
+              {{ form|crispy }}
+              <div class="custom-control custom-checkbox my-1 mr-sm-2">
+                 <input type="checkbox" class="custom-control-input" id="customControlInline" required>
+                 <label class="custom-control-label" for="customControlInline">
+                   {% trans "I've read and agree to the" %} <a href="{% url 'terms' %}" target="_blank">{% trans 'Terms of Use' %}</a>
+                 </label>
+               </div>
+              <span id="errorMessage"></span>
+          </fieldset>
+
+          <div class="form-group">
+            <button type="submit" class="btn btn-outline-primary" id="signUp">{% trans 'Sign Up' %}</button>
+          </div>
+      </form>
+
+      <div class="border-top pt-3">
+        <small class="text-muted">
+          {% trans 'Already Have an Acount ?' %} <a class="ml-2" href="{% url 'login' %}">{% trans 'Sign In' %}</a>
+        </small>
+      </div>
+    </div>
+    {% if LANGUAGE_CODE == 'ar' %}
+      <script type="text/javascript">
+        let labels = document.querySelectorAll("label");
+        labels[3].textContent = "البريد الإلكتروني*";
+      </script>
+    {% endif %}
+    <script type="text/javascript" src="{% static 'users/js/registerInputs.js' %}"></script>
+{% endblock content %}

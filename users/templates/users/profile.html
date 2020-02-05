@@ -1,0 +1,64 @@
+{% extends "blog/base.html" %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+{% load crispy_forms_tags %}
+{% block content %}
+<style>
+  #userPosts{
+    color: #444444;
+  }
+  #userPosts:hover{
+    color: black;
+    text-decoration: none;
+  }
+</style>
+<div class="content-section" {% if LANGUAGE_CODE == "ar" %} style="text-align: right" {% endif %}>
+    <div class="media">
+      <a href="{% url 'user-posts' user.username %}"><img class="rounded-circle account-img" src="{{ user.profile.image.url }}"></a>
+      <div class="media-body">
+        <h2 class="account-heading" id="account" >{{ user.get_full_name }}</h2>
+        <p class="text-secondary {% if LANGUAGE_CODE == "ar" %}mr-2{% endif %}"> {{ user.email }} </p>
+        <p class="text-secondary"> {% trans 'Joined' %} {{ user.date_joined }} </p><br>
+      </div>
+    </div>
+    <form method="post" enctype="multipart/form-data" id="UserUpdateForm">
+        {% csrf_token %}
+        <fieldset class="form-group">
+          <legend class="border-bottom mb-4">
+            <b class="mr-5">{% trans 'Profile Info' %}</b>
+            <a href="{% url 'user-posts' user.username %}" id="userPosts">
+              <b class="m{% if LANGUAGE_CODE == "ar" %}r{% else %}l{% endif %}-5">
+                {% if LANGUAGE_CODE == "en" %}
+                  My Posts
+                {% else %}
+                 {% if LANGUAGE_CODE == "fr" %}
+                  Mes publications
+                 {% else %}
+                  اقتراحاتي
+                  {% endif %}
+                {% endif %}
+              </b>
+            </a>
+          </legend>
+            {{ u_form|crispy }}
+            {{ p_form|crispy }}
+        </fieldset>
+        <div class="form-group">
+          <button type="submit" class="btn btn-primary" id="saveChanges" disabled style="cursor: default;">{% trans 'Save Changes' %}</button>
+        </div>
+    </form>
+  </div>
+  <!-- Enable save button when form is changed -->
+  <script type="text/javascript">
+    document.querySelector("#UserUpdateForm").addEventListener("input", function(){
+        document.querySelector("#saveChanges").disabled = false;
+        document.querySelector("#saveChanges").style.cursor = "pointer";
+      });
+      {% if LANGUAGE_CODE == 'ar' %}
+          let labels = document.querySelectorAll("label");
+          labels[3].textContent = "البريد الإلكتروني*";
+          labels[4].textContent = "الصورة*";
+      {% endif %}
+  </script>
+
+{% endblock content %}
